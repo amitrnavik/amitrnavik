@@ -1,12 +1,14 @@
-//jshint esversion:6
+//,jshint esversion:6
 require("dotenv").config();
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const express= require("express");
 const mongoose = require("mongoose");
 // const encrypt = require("mongoose-encryption");
-const md5 = require("md5");
+//const md5 = require("md5");
 const app = express();
+// const bcrypt = require("bcrypt");
+// const saltRounds = 10;
 
 mongoose.connect("mongodb://localhost:27017/userDB",{useNewUrlParser:true});
 
@@ -16,7 +18,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // const secret = ;
-// userSchema.plugin(encrypt,{secret:secret,encryptedFields:["password"]});
+// userSchema.plugin(encrypt,{secret:secret,encryptedFields:["password"]});---encryption
 
 const User = new mongoose.model("User",userSchema);
 
@@ -37,36 +39,45 @@ app.get("/login",function (req,res) {
  }); 
 
  app.post("/register",function(req,res){
-     const newUser = new User({
-         email : req.body.username,
-        password :md5(req.body.password)
-     });
-     newUser.save(function (err) {
-        if(err){
-            console.log(err);
-        } else
-        {
-            res.render("secrets.ejs")
-        }
-     });
+    // bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+    //     const newUser = new User({
+    //         email : req.body.username,
+    //        //password :md5(req.body.password)---md5
+    //        password: hash
+    //     });
+    //     newUser.save(function (err) {
+    //        if(err){
+    //            console.log(err);
+    //        } else
+    //        {
+    //            res.render("secrets.ejs")
+    //        }
+    //     });
+    // });
+  
  });
 
  app.post("/login",function(req,res){
-     const username = req.body.username;
-     const password= md5(req.body.password);
+    //  const username = req.body.username;
+    //  //const password= md5(req.body.password);---md5
+    //  const password= req.body.password;
 
-     User.findOne({email:username},function(err,foundUser){
-        if(err){
-            console.log(err);
-        }else{
-            if(foundUser){
-                if(foundUser.password=== password){
-                    res.render("secrets.ejs");
-                }
-            }
-        }
-     })
- })
+    //  User.findOne({email:username},function(err,foundUser){
+    //     if(err){
+    //         console.log(err);
+    //     }else{
+    //         if(foundUser){
+    //             //if(foundUser.password=== password){---md5
+    //             bcrypt.compare(password, foundUser.password, function(err, result) {
+    //                if(result===true) 
+    //                {
+    //                 res.render("secrets.ejs");
+    //                }
+    //             });    
+    //         }
+    //     }
+    //  })
+ });
 
 
 
